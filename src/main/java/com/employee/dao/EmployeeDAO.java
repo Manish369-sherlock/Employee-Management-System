@@ -1,0 +1,146 @@
+package com.employee.dao;
+
+import com.employee.model.Employee;
+import com.employee.util.DBConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class EmployeeDAO {
+
+    public void addEmployee(Employee employee) {
+
+        String sql = "INSERT INTO employees " +
+                "(name, email, phone, department, salary) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, employee.getName());
+            statement.setString(2, employee.getEmail());
+            statement.setString(3, employee.getPhone());
+            statement.setString(4, employee.getDepartment());
+            statement.setDouble(5, employee.getSalary());
+
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Employee added successfully!");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error adding employee!");
+            e.printStackTrace();
+        }
+    }
+
+    public void viewAllEmployees() {
+
+        String sql = "SELECT * FROM employees";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             var resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+
+                System.out.println("ID: " + resultSet.getInt("id"));
+                System.out.println("Name: " + resultSet.getString("name"));
+                System.out.println("Email: " + resultSet.getString("email"));
+                System.out.println("Phone: " + resultSet.getString("phone"));
+                System.out.println("Department: " + resultSet.getString("department"));
+                System.out.println("Salary: " + resultSet.getDouble("salary"));
+
+                System.out.println("----------------------------");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving employees!");
+            e.printStackTrace();
+        }
+    }
+
+    public void searchEmployee(int id) {
+
+        String sql = "SELECT * FROM employees WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id);
+
+            try (var resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+
+                    System.out.println("ID: " + resultSet.getInt("id"));
+                    System.out.println("Name: " + resultSet.getString("name"));
+                    System.out.println("Email: " + resultSet.getString("email"));
+                    System.out.println("Phone: " + resultSet.getString("phone"));
+                    System.out.println("Department: " + resultSet.getString("department"));
+                    System.out.println("Salary: " + resultSet.getDouble("salary"));
+
+                } else {
+                    System.out.println("Employee not found!");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching employee!");
+            e.printStackTrace();
+        }
+    }
+
+    public void updateEmployee(Employee employee) {
+
+        String sql = "UPDATE employees SET name = ?, phone = ?, " +
+                "department = ?, salary = ? WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, employee.getName());
+            statement.setString(2, employee.getPhone());
+            statement.setString(3, employee.getDepartment());
+            statement.setDouble(4, employee.getSalary());
+            statement.setInt(5, employee.getId());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Employee updated successfully!");
+            } else {
+                System.out.println("Employee not found!");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error updating employee!");
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteEmployee(int id) {
+
+        String sql = "DELETE FROM employees WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Employee deleted successfully!");
+            } else {
+                System.out.println("Employee not found!");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error deleting employee!");
+            e.printStackTrace();
+        }
+    }
+}
