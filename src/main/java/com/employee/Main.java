@@ -20,7 +20,9 @@ public class Main {
             System.out.println("3. Search Employee");
             System.out.println("4. Update Employee");
             System.out.println("5. Delete Employee");
-            System.out.println("6. Exit");
+            System.out.println("6. View Employees by Department");
+            System.out.println("7. View Salary Report");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -102,6 +104,17 @@ public class Main {
                     break;
 
                 case 6:
+                    System.out.print("Enter department: ");
+                    String searchDepartment = scanner.nextLine();
+
+                    employeeDAO.viewEmployeesByDepartment(searchDepartment);
+                    break;
+
+                case 7:
+                    employeeDAO.salaryReport();
+                    break;
+
+                case 8:
                     System.out.println("Thank you for using the application!");
                     scanner.close();
                     return;
