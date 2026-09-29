@@ -21,7 +21,8 @@ public class Main {
             System.out.println("4. Update Employee");
             System.out.println("5. Delete Employee");
             System.out.println("6. View Employees by Department");
-            System.out.println("7. Exit");
+            System.out.println("7. View Salary Report");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -31,22 +32,26 @@ public class Main {
 
                 case 1:
                     System.out.print("Enter name: ");
-                    String name = scanner.nextLine();
+                    String name = scanner.nextLine().trim();
 
                     System.out.print("Enter email: ");
-                    String email = scanner.nextLine();
+                    String email = scanner.nextLine().trim();
 
                     System.out.print("Enter phone: ");
-                    String phone = scanner.nextLine();
+                    String phone = scanner.nextLine().trim();
 
                     System.out.print("Enter department: ");
-                    String department = scanner.nextLine();
+                    String department = scanner.nextLine().trim();
 
                     System.out.print("Enter salary: ");
                     double salary = scanner.nextDouble();
 
                     Employee employee = new Employee(
-                            name, email, phone, department, salary
+                            name,
+                            email,
+                            phone,
+                            department,
+                            salary
                     );
 
                     employeeDAO.addEmployee(employee);
@@ -69,16 +74,16 @@ public class Main {
                     scanner.nextLine();
 
                     System.out.print("Enter new name: ");
-                    String updatedName = scanner.nextLine();
+                    String updatedName = scanner.nextLine().trim();
 
                     System.out.print("Enter new email: ");
-                    String updatedEmail = scanner.nextLine();
+                    String updatedEmail = scanner.nextLine().trim();
 
                     System.out.print("Enter new phone: ");
-                    String updatedPhone = scanner.nextLine();
+                    String updatedPhone = scanner.nextLine().trim();
 
                     System.out.print("Enter new department: ");
-                    String updatedDepartment = scanner.nextLine();
+                    String updatedDepartment = scanner.nextLine().trim();
 
                     System.out.print("Enter new salary: ");
                     double updatedSalary = scanner.nextDouble();
@@ -104,12 +109,16 @@ public class Main {
 
                 case 6:
                     System.out.print("Enter department: ");
-                    String searchDepartment = scanner.nextLine();
+                    String searchDepartment = scanner.nextLine().trim();
 
                     employeeDAO.viewEmployeesByDepartment(searchDepartment);
                     break;
 
                 case 7:
+                    employeeDAO.salaryReport();
+                    break;
+
+                case 8:
                     System.out.println("Thank you for using the application!");
                     scanner.close();
                     return;
