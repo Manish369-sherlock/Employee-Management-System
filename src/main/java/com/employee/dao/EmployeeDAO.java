@@ -182,44 +182,4 @@ public class EmployeeDAO {
             e.printStackTrace();
         }
     }
-
-    public void salaryReport() {
-
-        String sql = "SELECT COUNT(*) AS total_employees, " +
-                "SUM(salary) AS total_salary, " +
-                "AVG(salary) AS average_salary, " +
-                "MAX(salary) AS highest_salary, " +
-                "MIN(salary) AS lowest_salary " +
-                "FROM employees";
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             var resultSet = statement.executeQuery()) {
-
-            if (resultSet.next()) {
-
-                System.out.println("\n===== SALARY REPORT =====");
-                System.out.println("Total Employees: "
-                        + resultSet.getInt("total_employees"));
-
-                System.out.println("Total Salary: "
-                        + resultSet.getDouble("total_salary"));
-
-                System.out.println("Average Salary: "
-                        + resultSet.getDouble("average_salary"));
-
-                System.out.println("Highest Salary: "
-                        + resultSet.getDouble("highest_salary"));
-
-                System.out.println("Lowest Salary: "
-                        + resultSet.getDouble("lowest_salary"));
-
-                System.out.println("=========================");
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error generating salary report!");
-            e.printStackTrace();
-        }
-    }
 }
