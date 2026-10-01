@@ -9,14 +9,32 @@ import java.sql.SQLException;
 
 public class EmployeeDAO {
 
+    private Connection testConnection;
+
+    public EmployeeDAO() {
+    }
+
+    public EmployeeDAO(Connection testConnection) {
+        this.testConnection = testConnection;
+    }
+
+    private Connection getConnection() throws SQLException {
+
+        if (testConnection != null) {
+            return testConnection;
+        }
+
+        return DBConnection.getConnection();
+    }
+
     public void addEmployee(Employee employee) {
 
         String sql = "INSERT INTO employees " +
                 "(name, email, phone, department, salary) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, employee.getName());
             statement.setString(2, employee.getEmail());
@@ -45,7 +63,7 @@ public class EmployeeDAO {
 
         String sql = "SELECT * FROM employees";
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
              var resultSet = statement.executeQuery()) {
 
@@ -71,7 +89,7 @@ public class EmployeeDAO {
 
         String sql = "SELECT * FROM employees WHERE id = ?";
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
@@ -103,7 +121,7 @@ public class EmployeeDAO {
         String sql = "UPDATE employees SET name = ?, email = ?, phone = ?, " +
                 "department = ?, salary = ? WHERE id = ?";
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, employee.getName());
@@ -131,7 +149,7 @@ public class EmployeeDAO {
 
         String sql = "DELETE FROM employees WHERE id = ?";
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
@@ -154,7 +172,7 @@ public class EmployeeDAO {
 
         String sql = "SELECT * FROM employees WHERE department = ?";
 
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, department);
@@ -187,7 +205,7 @@ public class EmployeeDAO {
             e.printStackTrace();
         }
     }
-    
+
     public void salaryReport() {
 
         String sql = "SELECT COUNT(*) AS total_employees, " +
@@ -197,9 +215,9 @@ public class EmployeeDAO {
                 "MIN(salary) AS lowest_salary " +
                 "FROM employees";
 
-        try (Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
-            var resultSet = statement.executeQuery()) {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             var resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
 
