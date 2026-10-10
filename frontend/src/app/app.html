@@ -1,0 +1,130 @@
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">E</div>
+      <div>
+        <h2>EmployEase</h2>
+        <span>Management Portal</span>
+      </div>
+    </div>
+
+    <p class="menu-label">WORKSPACE</p>
+
+    <nav class="sidebar-nav">
+      <a class="nav-link active" routerLink="/">
+        <span>▦</span> Dashboard
+      </a>
+      <a class="nav-link" routerLink="/employees">
+        <span>♙</span> Employees
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">A</div>
+      <div>
+        <strong>Administrator</strong>
+        <span>System Admin</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div>
+        <p class="breadcrumb">Workspace / Overview</p>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <span class="status-dot"></span>
+        <span>Employee Portal</span>
+      </div>
+    </header>
+
+    <section class="dashboard-content">
+      <div class="welcome-banner">
+        <div>
+          <p class="eyebrow">EMPLOYEE MANAGEMENT</p>
+          <h2>Welcome to your workspace</h2>
+          <p>Manage your team, employee records, and workforce information.</p>
+        </div>
+        <div class="welcome-symbol">✦</div>
+      </div>
+
+      <div class="section-heading">
+        <div>
+          <h2>Overview</h2>
+          <p>Your workforce at a glance</p>
+        </div>
+        <a routerLink="/employees" class="primary-button">
+          View employees →
+        </a>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Total Employees</span>
+            <span class="stat-icon blue">♙</span>
+          </div>
+          <h3>0</h3>
+          <p>Registered employee records</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Active Employees</span>
+            <span class="stat-icon green">✓</span>
+          </div>
+          <h3>0</h3>
+          <p>Currently active records</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Departments</span>
+            <span class="stat-icon purple">▤</span>
+          </div>
+          <h3>0</h3>
+          <p>Departments represented</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>New Employees</span>
+            <span class="stat-icon orange">＋</span>
+          </div>
+          <h3>0</h3>
+          <p>Records added this month</p>
+        </article>
+      </div>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Employee Directory</h2>
+            <p>Your employee records will appear here.</p>
+          </div>
+          <a routerLink="/employees" class="text-link">
+            Open directory →
+          </a>
+        </div>
+
+        <div class="empty-state">
+          <div class="empty-icon">♙</div>
+          <h3>No employee records yet</h3>
+          <p>Once the employee module is connected, you can manage your workforce here.</p>
+          <a routerLink="/employees" class="primary-button">
+            Go to employees
+          </a>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        Employee Management System · Built with Angular
+      </footer>
+    </section>
+  </main>
+</div>
+
+<router-outlet />

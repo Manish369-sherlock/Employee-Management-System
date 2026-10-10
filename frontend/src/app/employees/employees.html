@@ -1,0 +1,193 @@
+
+<div class="employees-page">
+  <div class="page-heading">
+    <div>
+      <p class="breadcrumb">Workspace / Employees</p>
+      <h1>Employees</h1>
+      <p class="subtitle">Manage your employee records in one place.</p>
+    </div>
+
+    <button class="primary-button" type="button" (click)="openAddForm()">
+      <span>＋</span> Add Employee
+    </button>
+  </div>
+
+  <div class="summary-card">
+    <div>
+      <span class="summary-label">Total Employees</span>
+      <h2>{{ filteredEmployees.length }}</h2>
+      <p>Employee records matching your filters</p>
+    </div>
+    <div class="summary-icon">♙</div>
+  </div>
+
+  <section class="directory-card">
+    <div class="directory-heading">
+      <div>
+        <h2>Employee Directory</h2>
+        <p>Search, filter, and manage your team.</p>
+      </div>
+    </div>
+
+    <div class="filters">
+      <input
+        type="search"
+        placeholder="Search name, email, or employee ID..."
+        aria-label="Search employees"
+        [(ngModel)]="searchTerm"
+      />
+
+      <select aria-label="Filter by department" [(ngModel)]="selectedDepartment">
+        <option value="All">All Departments</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </div>
+
+    @if (filteredEmployees.length > 0) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Employee ID</th>
+              <th>Department</th>
+              <th>Position</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (employee of filteredEmployees; track employee.id) {
+              <tr>
+                <td>
+                  <div class="employee-cell">
+                    <div class="employee-avatar">
+                      {{ employee.name.charAt(0).toUpperCase() }}
+                    </div>
+                    <strong>{{ employee.name }}</strong>
+                  </div>
+                </td>
+                <td>{{ employee.employeeCode }}</td>
+                <td>{{ employee.department }}</td>
+                <td>{{ employee.position }}</td>
+                <td>{{ employee.email }}</td>
+                <td>
+                  <span
+                    class="status"
+                    [class.active-status]="employee.status === 'Active'"
+                    [class.inactive-status]="employee.status === 'Inactive'"
+                  >
+                    {{ employee.status }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="action-button"
+                    type="button"
+                    (click)="editEmployee(employee)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="action-button delete-button"
+                    type="button"
+                    (click)="deleteEmployee(employee.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">♙</div>
+        <h3>No employees found</h3>
+        <p>Try changing your search or department filter, or add an employee.</p>
+        <button class="primary-button" type="button" (click)="openAddForm()">
+          Add Employee
+        </button>
+      </div>
+    }
+  </section>
+
+  @if (showForm) {
+    <div class="modal-backdrop">
+      <section class="employee-modal" role="dialog" aria-modal="true"
+        aria-labelledby="form-title">
+        <div class="modal-heading">
+          <div>
+            <h2 id="form-title">
+              {{ editingId === null ? 'Add Employee' : 'Edit Employee' }}
+            </h2>
+            <p>Enter the employee information below.</p>
+          </div>
+          <button class="close-button" type="button"
+            aria-label="Close form" (click)="closeForm()">×</button>
+        </div>
+
+        <form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
+          <div class="form-grid">
+            <label>
+              Full Name *
+              <input name="name" [(ngModel)]="formData.name"
+                required minlength="2" maxlength="100" />
+            </label>
+
+            <label>
+              Employee ID *
+              <input name="employeeCode" [(ngModel)]="formData.employeeCode"
+                required maxlength="30" />
+            </label>
+
+            <label>
+              Email Address *
+              <input name="email" type="email" [(ngModel)]="formData.email"
+                required email maxlength="150" />
+            </label>
+
+            <label>
+              Department *
+              <select name="department" [(ngModel)]="formData.department" required>
+                <option value="">Select department</option>
+                @for (department of departments; track department) {
+                  <option [value]="department">{{ department }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Position *
+              <input name="position" [(ngModel)]="formData.position"
+                required maxlength="100" />
+            </label>
+
+            <label>
+              Status *
+              <select name="status" [(ngModel)]="formData.status" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </label>
+          </div>
+
+          <p class="required-note">* Required fields</p>
+
+          <div class="modal-actions">
+            <button class="secondary-button" type="button" (click)="closeForm()">
+              Cancel
+            </button>
+            <button class="primary-button" type="submit">
+              {{ editingId === null ? 'Save Employee' : 'Update Employee' }}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  }
+</div>
