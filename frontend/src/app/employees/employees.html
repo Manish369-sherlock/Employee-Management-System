@@ -7,16 +7,29 @@
       <p class="subtitle">Manage your employee records in one place.</p>
     </div>
 
-    <button class="primary-button" type="button" (click)="openAddForm()">
-      <span>＋</span> Add Employee
+    <button class="primary-button" type="button"
+            (click)="openAddForm()">
+      ＋ Add Employee
     </button>
   </div>
+
+  @if (successMessage) {
+    <div class="message success-message" role="status">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="message error-message" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
 
   <div class="summary-card">
     <div>
       <span class="summary-label">Total Employees</span>
-      <h2>{{ filteredEmployees.length }}</h2>
-      <p>Employee records matching your filters</p>
+      <h2>{{ employees.length }}</h2>
+      <p>Employee records in the system</p>
     </div>
     <div class="summary-icon">♙</div>
   </div>
@@ -32,12 +45,13 @@
     <div class="filters">
       <input
         type="search"
-        placeholder="Search name, email, or employee ID..."
+        placeholder="Search name, email, or ID..."
         aria-label="Search employees"
         [(ngModel)]="searchTerm"
       />
 
-      <select aria-label="Filter by department" [(ngModel)]="selectedDepartment">
+      <select aria-label="Filter by department"
+              [(ngModel)]="selectedDepartment">
         <option value="All">All Departments</option>
         @for (department of departments; track department) {
           <option [value]="department">{{ department }}</option>
@@ -45,20 +59,25 @@
       </select>
     </div>
 
-    @if (filteredEmployees.length > 0) {
+    @if (loading) {
+      <div class="empty-state">
+        <p>Loading employee records...</p>
+      </div>
+    } @else if (filteredEmployees.length > 0) {
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
               <th>Employee</th>
-              <th>Employee ID</th>
+              <th>ID</th>
               <th>Department</th>
-              <th>Position</th>
+              <th>Phone</th>
               <th>Email</th>
-              <th>Status</th>
+              <th>Salary</th>
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             @for (employee of filteredEmployees; track employee.id) {
               <tr>
@@ -70,32 +89,18 @@
                     <strong>{{ employee.name }}</strong>
                   </div>
                 </td>
-                <td>{{ employee.employeeCode }}</td>
+                <td>{{ employee.id }}</td>
                 <td>{{ employee.department }}</td>
-                <td>{{ employee.position }}</td>
+                <td>{{ employee.phone }}</td>
                 <td>{{ employee.email }}</td>
+                <td>{{ employee.salary | number:'1.2-2' }}</td>
                 <td>
-                  <span
-                    class="status"
-                    [class.active-status]="employee.status === 'Active'"
-                    [class.inactive-status]="employee.status === 'Inactive'"
-                  >
-                    {{ employee.status }}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    class="action-button"
-                    type="button"
-                    (click)="editEmployee(employee)"
-                  >
+                  <button class="action-button" type="button"
+                          (click)="editEmployee(employee)">
                     Edit
                   </button>
-                  <button
-                    class="action-button delete-button"
-                    type="button"
-                    (click)="deleteEmployee(employee.id)"
-                  >
+                  <button class="action-button delete-button" type="button"
+                          (click)="deleteEmployee(employee.id)">
                     Delete
                   </button>
                 </td>
@@ -108,8 +113,15 @@
       <div class="empty-state">
         <div class="empty-icon">♙</div>
         <h3>No employees found</h3>
-        <p>Try changing your search or department filter, or add an employee.</p>
-        <button class="primary-button" type="button" (click)="openAddForm()">
+        <p>
+          @if (errorMessage) {
+            Check the backend connection and try again.
+          } @else {
+            Try changing your search or department filter, or add an employee.
+          }
+        </p>
+        <button class="primary-button" type="button"
+                (click)="openAddForm()">
           Add Employee
         </button>
       </div>
@@ -118,8 +130,8 @@
 
   @if (showForm) {
     <div class="modal-backdrop">
-      <section class="employee-modal" role="dialog" aria-modal="true"
-        aria-labelledby="form-title">
+      <section class="employee-modal" role="dialog"
+               aria-modal="true" aria-labelledby="form-title">
         <div class="modal-heading">
           <div>
             <h2 id="form-title">
@@ -127,62 +139,143 @@
             </h2>
             <p>Enter the employee information below.</p>
           </div>
+
           <button class="close-button" type="button"
-            aria-label="Close form" (click)="closeForm()">×</button>
+                  aria-label="Close form" (click)="closeForm()">
+            ×
+          </button>
         </div>
 
-        <form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
+        <form #employeeForm="ngForm"
+              (ngSubmit)="saveEmployee(employeeForm)"
+              novalidate>
           <div class="form-grid">
             <label>
               Full Name *
-              <input name="name" [(ngModel)]="formData.name"
-                required minlength="2" maxlength="100" />
-            </label>
-
-            <label>
-              Employee ID *
-              <input name="employeeCode" [(ngModel)]="formData.employeeCode"
-                required maxlength="30" />
+              <input
+                name="name"
+                type="text"
+                [(ngModel)]="formData.name"
+                #nameField="ngModel"
+                required
+                minlength="2"
+                maxlength="100"
+                pattern=".*\S.*"
+                autocomplete="name"
+                [class.invalid-input]="nameField.invalid && nameField.touched"
+              />
+              @if (nameField.invalid && nameField.touched) {
+                <span class="field-error">
+                  @if (nameField.errors?.['required'] || nameField.errors?.['pattern']) {
+                    Full name is required.
+                  } @else if (nameField.errors?.['minlength']) {
+                    Name must contain at least 2 characters.
+                  } @else if (nameField.errors?.['maxlength']) {
+                    Name cannot exceed 100 characters.
+                  }
+                </span>
+              }
             </label>
 
             <label>
               Email Address *
-              <input name="email" type="email" [(ngModel)]="formData.email"
-                required email maxlength="150" />
+              <input
+                name="email"
+                type="email"
+                [(ngModel)]="formData.email"
+                #emailField="ngModel"
+                required
+                email
+                maxlength="150"
+                autocomplete="email"
+                [class.invalid-input]="emailField.invalid && emailField.touched"
+              />
+              @if (emailField.invalid && emailField.touched) {
+                <span class="field-error">
+                  @if (emailField.errors?.['required']) {
+                    Email address is required.
+                  } @else {
+                    Enter a valid email address.
+                  }
+                </span>
+              }
+            </label>
+
+            <label>
+              Phone *
+              <input
+                name="phone"
+                type="tel"
+                [(ngModel)]="formData.phone"
+                #phoneField="ngModel"
+                required
+                pattern="[0-9]{10}"
+                maxlength="10"
+                inputmode="numeric"
+                autocomplete="tel"
+                [class.invalid-input]="phoneField.invalid && phoneField.touched"
+              />
+              @if (phoneField.invalid && phoneField.touched) {
+                <span class="field-error">
+                  Enter a valid 10-digit phone number.
+                </span>
+              }
             </label>
 
             <label>
               Department *
-              <select name="department" [(ngModel)]="formData.department" required>
+              <select
+                name="department"
+                [(ngModel)]="formData.department"
+                #departmentField="ngModel"
+                required
+                [class.invalid-input]="departmentField.invalid && departmentField.touched"
+              >
                 <option value="">Select department</option>
                 @for (department of departments; track department) {
                   <option [value]="department">{{ department }}</option>
                 }
               </select>
+              @if (departmentField.invalid && departmentField.touched) {
+                <span class="field-error">
+                  Please select a department.
+                </span>
+              }
             </label>
 
             <label>
-              Position *
-              <input name="position" [(ngModel)]="formData.position"
-                required maxlength="100" />
-            </label>
-
-            <label>
-              Status *
-              <select name="status" [(ngModel)]="formData.status" required>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
+              Salary *
+              <input
+                name="salary"
+                type="number"
+                [(ngModel)]="formData.salary"
+                #salaryField="ngModel"
+                required
+                min="0.01"
+                step="0.01"
+                [class.invalid-input]="salaryField.invalid && salaryField.touched"
+              />
+              @if (salaryField.invalid && salaryField.touched) {
+                <span class="field-error">
+                  @if (salaryField.errors?.['required']) {
+                    Salary is required.
+                  } @else {
+                    Salary must be greater than zero.
+                  }
+                </span>
+              }
             </label>
           </div>
 
           <p class="required-note">* Required fields</p>
 
           <div class="modal-actions">
-            <button class="secondary-button" type="button" (click)="closeForm()">
+            <button class="secondary-button" type="button"
+                    (click)="closeForm()">
               Cancel
             </button>
-            <button class="primary-button" type="submit">
+            <button class="primary-button" type="submit"
+                    [disabled]="loading || employeeForm.invalid">
               {{ editingId === null ? 'Save Employee' : 'Update Employee' }}
             </button>
           </div>

@@ -9,6 +9,31 @@
   box-sizing: border-box;
 }
 
+/* Employee form validation */
+.field-error {
+  display: block;
+  margin-top: 6px;
+  color: #c62828;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.employee-modal input.invalid-input,
+.employee-modal select.invalid-input {
+  border-color: #c62828;
+  outline-color: #c62828;
+}
+
+.employee-modal input.invalid-input:focus,
+.employee-modal select.invalid-input:focus {
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+}
+
+.employee-modal button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .employees-page {
   max-width: 1500px;
   margin: 0 auto;
@@ -59,6 +84,11 @@
 
 .primary-button:hover {
   background: #2448c8;
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .summary-card {
@@ -289,6 +319,23 @@ tbody tr:hover {
   color: #8993a5;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.message {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.success-message {
+  background: #e3f8ed;
+  color: #14834f;
+}
+
+.error-message {
+  background: #fff0f0;
+  color: #c62828;
 }
 
 .modal-backdrop {

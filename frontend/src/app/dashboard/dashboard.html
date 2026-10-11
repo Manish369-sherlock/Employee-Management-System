@@ -1,1 +1,162 @@
-<p>dashboard works!</p>
+
+<section class="dashboard">
+  <header class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Overview of your employee management system.</p>
+    </div>
+
+    <a routerLink="/employees" class="primary-button">
+      Manage Employees
+    </a>
+  </header>
+
+  @if (errorMessage) {
+    <div class="message error-message" role="alert">
+      {{ errorMessage }}
+      <button type="button" (click)="loadDashboard()">
+        Retry
+      </button>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="empty-state">
+      Loading dashboard data...
+    </div>
+  } @else {
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-label">Total Employees</span>
+        <h2>{{ totalEmployees }}</h2>
+        <p>Employee records</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Departments</span>
+        <h2>{{ departmentCount }}</h2>
+        <p>Departments represented</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Total Monthly Salary</span>
+        <h2>{{ totalSalary | currency:'INR':'symbol':'1.0-0' }}</h2>
+        <p>Combined salary expenditure</p>
+      </article>
+    </section>
+
+    <section class="content-card">
+      <h2>Department Overview</h2>
+      <p class="section-description">
+        Employee distribution by department.
+      </p>
+
+      @if (departments.length === 0) {
+        <div class="empty-state">
+          No employee data available yet.
+          <a routerLink="/employees">Add your first employee</a>
+        </div>
+      } @else {
+        @for (department of departments; track department) {
+          <div class="department-row">
+            <div class="department-info">
+              <span>{{ department }}</span>
+              <strong>{{ getDepartmentCount(department) }}</strong>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getDepartmentPercentage(department)">
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="content-card">
+      <h2>Department Salary Report</h2>
+      <p class="section-description">
+        Salary expenditure grouped by department.
+      </p>
+
+      @if (departments.length === 0) {
+        <div class="empty-state">
+          No salary data available yet.
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Employees</th>
+                <th>Total Monthly Salary</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (department of departments; track department) {
+                <tr>
+                  <td>{{ department }}</td>
+                  <td>{{ getDepartmentCount(department) }}</td>
+                  <td>
+                    {{ getDepartmentSalary(department)
+                      | currency:'INR':'symbol':'1.2-2' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th>{{ totalEmployees }}</th>
+                <th>
+                  {{ totalSalary | currency:'INR':'symbol':'1.2-2' }}
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section class="content-card">
+      <div class="section-heading">
+        <div>
+          <h2>Recent Employees</h2>
+          <p class="section-description">
+            Latest employee records.
+          </p>
+        </div>
+
+        <a routerLink="/employees" class="text-link">View all</a>
+      </div>
+
+      @if (employees.length === 0) {
+        <div class="empty-state">
+          No employees found.
+        </div>
+      } @else {
+        @for (employee of recentEmployees; track employee.id) {
+          <div class="employee-row">
+            <div class="employee-avatar">
+              {{ employee.name.charAt(0).toUpperCase() }}
+            </div>
+
+            <div class="employee-details">
+              <strong>{{ employee.name }}</strong>
+              <span>{{ employee.email }}</span>
+            </div>
+
+            <div class="employee-department">
+              {{ employee.department }}
+            </div>
+          </div>
+        }
+      }
+    </section>
+  }
+</section>

@@ -6,13 +6,13 @@ export const routes: Routes = [
     path: '',
     title: 'Dashboard | EmployEase',
     loadComponent: () =>
-      import('./dashboard/dashboard').then((m) => m.Dashboard)
+      import('./dashboard/dashboard').then(m => m.Dashboard)
   },
   {
     path: 'employees',
     title: 'Employees | EmployEase',
     loadComponent: () =>
-      import('./employees/employees').then((m) => m.Employees)
+      import('./employees/employees').then(m => m.Employees)
   },
   {
     path: '**',
