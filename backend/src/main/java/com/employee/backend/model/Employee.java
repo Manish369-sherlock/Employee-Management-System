@@ -1,4 +1,3 @@
-
 package com.employee.backend.model;
 
 import jakarta.validation.constraints.DecimalMin;
@@ -10,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 public class Employee {
 
-    private int id;
+    private Integer id;
 
     @NotBlank(message = "Employee name is required")
     @Size(min = 2, max = 100, message = "Name must contain 2 to 100 characters")
@@ -36,7 +35,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(int id, String name, String email, String phone,
+    public Employee(Integer id, String name, String email, String phone,
                     String department, Double salary) {
         this.id = id;
         this.name = name;
@@ -46,11 +45,11 @@ public class Employee {
         this.salary = salary;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

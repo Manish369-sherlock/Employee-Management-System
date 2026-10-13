@@ -2,6 +2,7 @@
 package com.employee.backend.dao;
 
 import com.employee.backend.model.Employee;
+import com.employee.backend.model.SalaryReport;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -88,13 +89,17 @@ public class EmployeeDAO {
     }
 
     public boolean updateEmployee(int id, Employee employee) {
+        if (getEmployeeById(id).isEmpty()) {
+            return false;
+        }
+
         String sql = """
                 UPDATE employees
                 SET name = ?, email = ?, phone = ?, department = ?, salary = ?
                 WHERE id = ?
                 """;
 
-        int rows = jdbcTemplate.update(
+        jdbcTemplate.update(
                 sql,
                 employee.getName(),
                 employee.getEmail(),
@@ -104,11 +109,41 @@ public class EmployeeDAO {
                 id
         );
 
-        return rows > 0;
+        return true;
     }
 
     public boolean deleteEmployee(int id) {
         String sql = "DELETE FROM employees WHERE id = ?";
         return jdbcTemplate.update(sql, id) > 0;
+    }
+
+    public List<Employee> getEmployeesByDepartment(String department) {
+        String sql = """
+                SELECT id, name, email, phone, department, salary
+                FROM employees
+                WHERE department = ?
+                ORDER BY id
+                """;
+
+        return jdbcTemplate.query(sql, this::mapEmployee, department);
+    }
+
+    public SalaryReport getSalaryReport() {
+        String sql = """
+                SELECT COUNT(*) AS total_employees,
+                       COALESCE(SUM(salary), 0) AS total_salary,
+                       COALESCE(AVG(salary), 0) AS average_salary,
+                       COALESCE(MAX(salary), 0) AS highest_salary,
+                       COALESCE(MIN(salary), 0) AS lowest_salary
+                FROM employees
+                """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new SalaryReport(
+                rs.getLong("total_employees"),
+                rs.getDouble("total_salary"),
+                rs.getDouble("average_salary"),
+                rs.getDouble("highest_salary"),
+                rs.getDouble("lowest_salary")
+        ));
     }
 }

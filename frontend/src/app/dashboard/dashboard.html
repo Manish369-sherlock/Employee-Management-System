@@ -43,6 +43,24 @@
         <h2>{{ totalSalary | currency:'INR':'symbol':'1.0-0' }}</h2>
         <p>Combined salary expenditure</p>
       </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Average Salary</span>
+        <h2>{{ averageSalary | currency:'INR':'symbol':'1.0-0' }}</h2>
+        <p>Average salary per employee</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Highest Salary</span>
+        <h2>{{ highestSalary | currency:'INR':'symbol':'1.0-0' }}</h2>
+        <p>Top employee compensation</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Lowest Salary</span>
+        <h2>{{ lowestSalary | currency:'INR':'symbol':'1.0-0' }}</h2>
+        <p>Minimum employee compensation</p>
+      </article>
     </section>
 
     <section class="content-card">

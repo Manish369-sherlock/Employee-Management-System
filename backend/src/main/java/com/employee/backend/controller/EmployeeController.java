@@ -1,6 +1,7 @@
 package com.employee.backend.controller;
 
 import com.employee.backend.model.Employee;
+import com.employee.backend.model.SalaryReport;
 import com.employee.backend.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,23 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public ResponseEntity<List<Employee>> getAllEmployees(
+            @RequestParam(required = false) String department) {
+        if (department != null && !department.isBlank() && !department.equalsIgnoreCase("All")) {
+            return ResponseEntity.ok(employeeService.getEmployeesByDepartment(department));
+        }
         return ResponseEntity.ok(employeeService.getAllEmployees());
+    }
+
+    @GetMapping("/department/{department}")
+    public ResponseEntity<List<Employee>> getEmployeesByDepartment(
+            @PathVariable String department) {
+        return ResponseEntity.ok(employeeService.getEmployeesByDepartment(department));
+    }
+
+    @GetMapping("/salary-report")
+    public ResponseEntity<SalaryReport> getSalaryReport() {
+        return ResponseEntity.ok(employeeService.getSalaryReport());
     }
 
     @GetMapping("/{id}")

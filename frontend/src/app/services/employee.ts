@@ -15,9 +15,15 @@ export interface Employee {
 
 export type EmployeeInput = Omit<Employee, 'id'>;
 
-// Keep false until the backend and MySQL are ready.
-// On Monday, change this to true to use Spring Boot.
-const USE_BACKEND_API = false;
+export interface SalaryReport {
+  totalEmployees: number;
+  totalSalary: number;
+  averageSalary: number;
+  highestSalary: number;
+  lowestSalary: number;
+}
+
+const USE_BACKEND_API = true;
 
 @Injectable({
   providedIn: 'root'
@@ -158,5 +164,46 @@ export class EmployeeService {
     this.saveEmployees(remainingEmployees);
 
     return of(undefined);
+  }
+
+  getEmployeesByDepartment(department: string): Observable<Employee[]> {
+    if (USE_BACKEND_API) {
+      return this.http.get<Employee[]>(
+        `${this.apiUrl}/department/${encodeURIComponent(department)}`
+      );
+    }
+
+    const employees = this.loadEmployees().filter(
+      item => item.department.toLowerCase() === department.toLowerCase()
+    );
+    return of(employees);
+  }
+
+  getSalaryReport(): Observable<SalaryReport> {
+    if (USE_BACKEND_API) {
+      return this.http.get<SalaryReport>(`${this.apiUrl}/salary-report`);
+    }
+
+    const employees = this.loadEmployees();
+    const count = employees.length;
+    if (count === 0) {
+      return of({
+        totalEmployees: 0,
+        totalSalary: 0,
+        averageSalary: 0,
+        highestSalary: 0,
+        lowestSalary: 0
+      });
+    }
+
+    const salaries = employees.map(e => Number(e.salary || 0));
+    const totalSalary = salaries.reduce((a, b) => a + b, 0);
+    return of({
+      totalEmployees: count,
+      totalSalary,
+      averageSalary: Math.round((totalSalary / count) * 100) / 100,
+      highestSalary: Math.max(...salaries),
+      lowestSalary: Math.min(...salaries)
+    });
   }
 }

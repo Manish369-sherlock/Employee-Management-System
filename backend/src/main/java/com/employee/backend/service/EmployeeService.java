@@ -2,6 +2,7 @@ package com.employee.backend.service;
 
 import com.employee.backend.dao.EmployeeDAO;
 import com.employee.backend.model.Employee;
+import com.employee.backend.model.SalaryReport;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +35,13 @@ public class EmployeeService {
 
     public boolean deleteEmployee(int id) {
         return employeeDAO.deleteEmployee(id);
+    }
+
+    public List<Employee> getEmployeesByDepartment(String department) {
+        return employeeDAO.getEmployeesByDepartment(department);
+    }
+
+    public SalaryReport getSalaryReport() {
+        return employeeDAO.getSalaryReport();
     }
 }

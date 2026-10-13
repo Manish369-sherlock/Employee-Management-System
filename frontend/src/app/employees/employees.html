@@ -84,7 +84,7 @@
                 <td>
                   <div class="employee-cell">
                     <div class="employee-avatar">
-                      {{ employee.name.charAt(0).toUpperCase() }}
+                      {{ (employee.name || '?').charAt(0).toUpperCase() }}
                     </div>
                     <strong>{{ employee.name }}</strong>
                   </div>
