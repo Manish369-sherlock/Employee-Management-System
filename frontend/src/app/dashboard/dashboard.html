@@ -108,6 +108,7 @@
           <table>
             <thead>
               <tr>
+                <th>#</th>
                 <th>Department</th>
                 <th>Employees</th>
                 <th>Total Monthly Salary</th>
@@ -115,12 +116,13 @@
             </thead>
 
             <tbody>
-              @for (department of departments; track department) {
+              @for (row of salaryReportRows; track row.department; let i = $index) {
                 <tr>
-                  <td>{{ department }}</td>
-                  <td>{{ getDepartmentCount(department) }}</td>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ row.department }}</td>
+                  <td>{{ row.count }}</td>
                   <td>
-                    {{ getDepartmentSalary(department)
+                    {{ row.totalSalary
                       | currency:'INR':'symbol':'1.2-2' }}
                   </td>
                 </tr>
@@ -129,7 +131,7 @@
 
             <tfoot>
               <tr>
-                <th>Total</th>
+                <th colspan="2">Total</th>
                 <th>{{ totalEmployees }}</th>
                 <th>
                   {{ totalSalary | currency:'INR':'symbol':'1.2-2' }}

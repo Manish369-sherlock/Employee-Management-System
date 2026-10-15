@@ -149,6 +149,17 @@ export class Dashboard implements OnInit {
     ) * 100;
   }
 
+  /** Departments sorted by total salary descending — used by the salary report table */
+  get salaryReportRows(): { department: string; count: number; totalSalary: number }[] {
+    return this.departments
+      .map(department => ({
+        department,
+        count: this.getDepartmentCount(department),
+        totalSalary: this.getDepartmentSalary(department)
+      }))
+      .sort((a, b) => b.totalSalary - a.totalSalary);
+  }
+
   get recentEmployees(): Employee[] {
     return [...this.employees]
       .sort((a, b) => b.id - a.id)

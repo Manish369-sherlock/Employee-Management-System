@@ -28,7 +28,7 @@ export class Employees implements OnInit {
   successMessage = '';
 
   private readonly defaultDepartments = [
-    'Engineering',
+    'IT',
     'Human Resources',
     'Finance',
     'Marketing',
